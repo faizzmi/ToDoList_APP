@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 
 export const useTodoList = () => {
   const [todos, setTodos] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const savedTodos = JSON.parse(localStorage.getItem("todos")) || [];
@@ -14,17 +15,23 @@ export const useTodoList = () => {
   }, [todos]);
 
   const addTodo = (todo) => {
-    setTodos((prevTodos) => [...prevTodos, todo]);
+    setTimeout(() => setTodos((prevTodos) => [...prevTodos, todo]), 500);
   };
 
   const deleteTodo = (id) => {
-    const updatedTodos = todos.filter((todo) => todo.id !== id);
-    setTodos(updatedTodos);
+    setIsLoading(true);
+
+    setTimeout(() => {
+      const updatedTodos = todos.filter((todo) => todo.id !== id);
+      setTodos(updatedTodos);
+      setIsLoading(false);
+    }, 2000);
   };
 
   return {
     todos,
     addTodo,
     deleteTodo,
+    isLoading,
   };
 };

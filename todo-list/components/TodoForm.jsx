@@ -9,6 +9,7 @@ export const ToDoForm = ({ addTodo }) => {
   const [accessibility, setAccessibility] = useState(0.5);
   const [errors, setErrors] = useState({});
   const [successMessage, setSuccessMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const types = [
     "education",
@@ -37,27 +38,33 @@ export const ToDoForm = ({ addTodo }) => {
     e.preventDefault();
     if (!validateForm()) return;
 
-    const newTodo = {
-      id: Date.now(),
-      activity,
-      price,
-      type,
-      bookingRequired,
-      accessibility,
-    };
-    console.log(newTodo);
-
-    addTodo(newTodo);
-    setActivity("");
-    setPrice("");
-    setType("");
-    setBookingRequired(false);
-    setAccessibility(0.5);
+    setLoading(true);
     setErrors({});
-    setSuccessMessage("Todo added successfully!");
+    setSuccessMessage("");
 
     setTimeout(() => {
-      setSuccessMessage("");
+      const newTodo = {
+        id: Date.now(),
+        activity,
+        price: parseFloat(price).toFixed(2),
+        type,
+        bookingRequired,
+        accessibility,
+      };
+      console.log(newTodo);
+
+      addTodo(newTodo);
+      setActivity("");
+      setPrice("");
+      setType("");
+      setBookingRequired(false);
+      setAccessibility(0.5);
+      setLoading(false); 
+      setSuccessMessage("Todo added successfully!");
+
+      setTimeout(() => {
+        setSuccessMessage("");
+      }, 3000);
     }, 3000);
   };
 
@@ -87,7 +94,7 @@ export const ToDoForm = ({ addTodo }) => {
         <input
           type="number"
           value={price}
-          onChange={(e) => setPrice(parseFloat(e.target.value).toFixed(2))}
+          onChange={(e) => setPrice(e.target.value)}
           placeholder="Enter price"
           className="mt-2 p-2 w-full border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
@@ -140,22 +147,26 @@ export const ToDoForm = ({ addTodo }) => {
           className="mt-2 w-full"
         />
       </div>
-      
+
       <div className="text-center">
         {errors.general && (
-            <p className="text-red-500 text-sm font-semibold">{errors.general}</p>
+          <p className="text-red-500 text-sm font-semibold">{errors.general}</p>
+        )}
+        {loading && (
+          <p className="text-blue-500 text-sm font-semibold">Adding...</p>
         )}
         {successMessage && (
-            <p className="text-green-500 text-sm font-semibold">{successMessage}</p>
+          <p className="text-green-500 text-sm font-semibold">{successMessage}</p>
         )}
       </div>
 
-
       <button
         type="submit"
-        className="w-full mt-2 p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none"
+        disabled={loading}
+        className={`w-full mt-2 p-2 text-white rounded-md focus:outline-none bg-blue-500 hover:bg-blue-600"
+        }`}
       >
-        Add Todo
+         Add Todo
       </button>
     </form>
   );

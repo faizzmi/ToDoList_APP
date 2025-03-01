@@ -11,7 +11,8 @@ export const TodoItem = ({ todo, deleteTodo }) => {
   return (
     <li className="flex justify-between items-center p-4 border border-gray-300 rounded-lg shadow-sm mb-4">
       <div>
-        <strong>{todo.activity}</strong> - RM{todo.price} ({todo.type})
+        <strong className="truncate max-w-[200px] block overflow-hidden whitespace-nowrap">{todo.activity}</strong>
+        RM{todo.price} ({todo.type})
         {todo.bookingRequired && (
           <span className="ml-2 text-sm text-green-500">Booking Required</span>
         )}
